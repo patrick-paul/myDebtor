@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./index.css" />
+    <link type="image/x-icon" href="./assets/notebook.png" rel="icon" />
+    <title>My Debtor</title>
+  </head>
+  <body id="body">
+    <div class="main">
+      <div class="freeTrial">
+        <h2>無料トライアル残り時間：</h2>
+        <div class="clock">
+          <div class="flip">
+            <div class="digital front" data-number="0"></div>
+            <div class="digital back" data-number="1"></div>
+          </div>
+          <div class="flip">
+            <div class="digital front" data-number="5"></div>
+            <div class="digital back" data-number="4"></div>
+          </div>
+          <em class="divider">:</em>
+          <div class="flip">
+            <div class="digital front" data-number="0"></div>
+            <div class="digital back" data-number="1"></div>
+          </div>
+          <div class="flip">
+            <div class="digital front" data-number="0"></div>
+            <div class="digital back" data-number="1"></div>
+          </div>
+        </div>
+      </div>
+      <div class="header">
+        <h1>
+          My Debtor
+          <img
+            src="./assets/notebook.png"
+            alt="icon"
+            height="40px"
+            width="40px"
+          />
+        </h1>
+      </div>
+      <div class="buttons">
+        <div class="button1">
+          <button onclick="showDebtors()">
+            <img src="./assets/liability.png" alt="user icons" /> 債務者
+          </button>
+        </div>
+        <div class="button2">
+          <button onclick="showCalculator()">
+            <img src="./assets/calculator.png" alt="user icons" /> 計算機
+          </button>
+        </div>
+        <div class="button3">
+          <button onclick="showSettings()">
+            <img src="./assets/cogwheel.png" alt="user icons" /> 設定
+          </button>
+        </div>
+      </div>
+    </div>
+    <footer>
+      <span id="organisation" style="float: left; margin: 0 25px"></span>
+      <p>
+        &copy; 2024 開発者:
+        <a
+          href="https://www.instagram.com/patric_forreal?igsh=a2V3b2FhOGRnaG15"
+          target="_blank"
+          >Patrick cPage</a
+        >
+        || CIVE IPT I 2024
+      </p>
+      <span id="lang" style="float: right; margin: 0 50px"></span>
+    </footer>
+
+    <div class="superCalculator" id="superCalculator">
+      <div class="calculator" id="calculator">
+        <div class="calculator-display" id="display">0</div>
+        <div class="calculator-keys">
+          <button class="key" onclick="hideCalculator()">オフ</button>
+          <button class="key" style="visibility: hidden"></button>
+          <button class="key" onclick="deleteLast()">DEL</button>
+          <button class="key" onclick="clearDisplay()">AC</button>
+          <button class="key" onclick="appendNumber('7')">7</button>
+          <button class="key" onclick="appendNumber('8')">8</button>
+          <button class="key" onclick="appendNumber('9')">9</button>
+          <button class="key" onclick="chooseOperation('/')">/</button>
+          <button class="key" onclick="appendNumber('4')">4</button>
+          <button class="key" onclick="appendNumber('5')">5</button>
+          <button class="key" onclick="appendNumber('6')">6</button>
+          <button class="key" onclick="chooseOperation('*')">*</button>
+          <button class="key" onclick="appendNumber('1')">1</button>
+          <button class="key" onclick="appendNumber('2')">2</button>
+          <button class="key" onclick="appendNumber('3')">3</button>
+          <button class="key" onclick="chooseOperation('-')">-</button>
+          <button class="key" onclick="appendNumber('0')">0</button>
+          <button class="key" onclick="appendNumber('.')">.</button>
+          <button class="key" onclick="chooseOperation('%')">%</button>
+          <button class="key" onclick="chooseOperation('+')">+</button>
+          <button class="key equals" onclick="compute()">=</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="superContainer" id="superContainer">
+      <div class="container" id="container">
+        <div class="header" id="header">
+          <div class="flexItem">
+            <h1 class="flexItem" style="float: left">すべての債務</h1>
+          </div>
+          <div class="flexItem">
+            <button id="addNewRecord" class="flexItem">
+              + 新しい記録を追加
+            </button>
+          </div>
+          <div class="flexItem">
+            <button
+              id="hideDebtors"
+              class="flexItem"
+              style="float: right"
+              onclick="hideDebtors()"
+            >
+              X
+            </button>
+          </div>
+        </div>
+        <table id="dataTable">
+          <thead>
+            <tr>
+              <th>ユーザー</th>
+              <th>フルネーム</th>
+              <th>タイプ</th>
+              <th>初期負債</th>
+              <th>支払済み額</th>
+              <th>残高</th>
+              <th>通貨</th>
+              <th>記録日</th>
+              <th>支払期日</th>
+              <th>支払進捗</th>
+              <th>アクション</th>
+            </tr>
+          </thead>
+          <tbody id="debtsTableBody">
+            <!-- 行はここに動的に追加されます -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="addRecordModal" class="modal">
+      <div class="modal-content">
+        <span class="close" style="float: right">&times;</span>
+        <form id="addRecordForm">
+          <label for="fullName">フルネーム:</label>
+          <input
+            type="text"
+            id="fullName"
+            name="fullName"
+            required
+            class="form-input"
+            autocomplete="off"
+          />
+
+          <label for="type">タイプ:</label>
+          <select id="type" name="type" required class="form-input">
+            <option value="Individual">個人</option>
+            <option value="Organisation">組織</option>
+          </select>
+
+          <label for="initialDebt">初期負債:</label>
+          <input
+            type="number"
+            id="initialDebt"
+            name="initialDebt"
+            required
+            class="form-input"
+          />
+
+          <label for="currency">通貨:</label>
+          <select id="currency" name="currency" required class="form-input">
+            <option value="USD">USD 🇺🇸</option>
+            <option value="TZS">TZS 🇹🇿</option>
+            <option value="EUR">EUR 🇪🇺</option>
+            <option value="RUB">RUB 🇷🇺</option>
+            <option value="JPY">JPY 🇯🇵</option>
+            <option value="FRA">EUR 🇫🇷</option>
+            <option value="INR">INR 🇮🇳</option>
+            <option value="SAR">SAR 🇸🇦</option>
+            <option value="CNY">CNY 🇨🇳</option>
+          </select>
+
+          <label for="recordDate">記録日:</label>
+          <input
+            type="date"
+            id="recordDate"
+            name="recordDate"
+            required
+            class="form-input"
+          />
+
+          <label for="paybackDate">支払期日:</label>
+          <input
+            type="date"
+            id="paybackDate"
+            name="paybackDate"
+            required
+            class="form-input"
+          />
+
+          <button type="submit" class="key">記録を追加</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="superSettings" id="superSettings">
+      <div class="settings">
+        <div class="modal-content">
+          <span class="close" id="closeSettings" style="float: right"
+            >&times;</span
+          >
+          <h2>設定</h2>
+          <form id="theSettingForm">
+            <label for="organizationName">組織名:</label>
+            <input
+              type="text"
+              id="organizationName"
+              name="organizationName"
+              required
+              class="form-input"
+              autocomplete="off"
+              placeholder="例: cPage"
+            />
+
+            <label for="language">言語:</label>
+            <select id="language" name="language" required class="form-input">
+              <option value="ENG">英語 🇺🇸</option>
+              <option value="SWH">スワヒリ語 🇹🇿</option>
+              <option value="GER">ドイツ語 🇩🇪</option>
+              <option value="RUS">ロシア語 🇷🇺</option>
+              <option value="JPY">日本語 🇯🇵</option>
+              <option value="FRA">フランス語 🇫🇷</option>
+              <option value="HIN">ヒンディー語 🇮🇳</option>
+              <option value="ARA">アラビア語 🇸🇦</option>
+              <option value="ZHO">中国語 🇨🇳</option>
+            </select>
+
+            <button type="submit" class="key">閉じる & 適用</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!--- FYI: on God --->
+    <script src="./index.js"></script>
+  </body>
+</html>

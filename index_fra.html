@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./index.css" />
+    <link type="image/x-icon" href="./assets/notebook.png" rel="icon" />
+    <title>My Debtor</title>
+  </head>
+  <body id="body">
+    <div class="main">
+      <div class="freeTrial">
+        <h2>Temps d'Essai Gratuit Restant :</h2>
+        <div class="clock">
+          <div class="flip">
+            <div class="digital front" data-number="0"></div>
+            <div class="digital back" data-number="1"></div>
+          </div>
+          <div class="flip">
+            <div class="digital front" data-number="5"></div>
+            <div class="digital back" data-number="4"></div>
+          </div>
+          <em class="divider">:</em>
+          <div class="flip">
+            <div class="digital front" data-number="0"></div>
+            <div class="digital back" data-number="1"></div>
+          </div>
+          <div class="flip">
+            <div class="digital front" data-number="0"></div>
+            <div class="digital back" data-number="1"></div>
+          </div>
+        </div>
+      </div>
+      <div class="header">
+        <h1>
+          My Debtor
+          <img
+            src="./assets/notebook.png"
+            alt="icône"
+            height="40px"
+            width="40px"
+          />
+        </h1>
+      </div>
+      <div class="buttons">
+        <div class="button1">
+          <button onclick="showDebtors()">
+            <img src="./assets/liability.png" alt="icônes utilisateur" />
+            Créanciers
+          </button>
+        </div>
+        <div class="button2">
+          <button onclick="showCalculator()">
+            <img src="./assets/calculator.png" alt="icônes utilisateur" />
+            Calculatrice
+          </button>
+        </div>
+        <div class="button3">
+          <button onclick="showSettings()">
+            <img src="./assets/cogwheel.png" alt="icônes utilisateur" />
+            Paramètres
+          </button>
+        </div>
+      </div>
+    </div>
+    <footer>
+      <span id="organisation" style="float: left; margin: 0 25px"></span>
+      <p>
+        &copy; 2024 Développé par:
+        <a
+          href="https://www.instagram.com/patric_forreal?igsh=a2V3b2FhOGRnaG15"
+          target="_blank"
+          >Patrick cPage</a
+        >
+        || CIVE IPT I 2024
+      </p>
+      <span id="lang" style="float: right; margin: 0 50px"></span>
+    </footer>
+
+    <div class="superCalculator" id="superCalculator">
+      <div class="calculator" id="calculator">
+        <div class="calculator-display" id="display">0</div>
+        <div class="calculator-keys">
+          <button class="key" onclick="hideCalculator()">Arrêter</button>
+          <button class="key" style="visibility: hidden"></button>
+          <button class="key" onclick="deleteLast()">SUP</button>
+          <button class="key" onclick="clearDisplay()">AC</button>
+          <button class="key" onclick="appendNumber('7')">7</button>
+          <button class="key" onclick="appendNumber('8')">8</button>
+          <button class="key" onclick="appendNumber('9')">9</button>
+          <button class="key" onclick="chooseOperation('/')">/</button>
+          <button class="key" onclick="appendNumber('4')">4</button>
+          <button class="key" onclick="appendNumber('5')">5</button>
+          <button class="key" onclick="appendNumber('6')">6</button>
+          <button class="key" onclick="chooseOperation('*')">*</button>
+          <button class="key" onclick="appendNumber('1')">1</button>
+          <button class="key" onclick="appendNumber('2')">2</button>
+          <button class="key" onclick="appendNumber('3')">3</button>
+          <button class="key" onclick="chooseOperation('-')">-</button>
+          <button class="key" onclick="appendNumber('0')">0</button>
+          <button class="key" onclick="appendNumber('.')">.</button>
+          <button class="key" onclick="chooseOperation('%')">%</button>
+          <button class="key" onclick="chooseOperation('+')">+</button>
+          <button class="key equals" onclick="compute()">=</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="superContainer" id="superContainer">
+      <div class="container" id="container">
+        <div class="header" id="header">
+          <div class="flexItem">
+            <h1 class="flexItem" style="float: left">Tous les Créances</h1>
+          </div>
+          <div class="flexItem">
+            <button id="addNewRecord" class="flexItem">
+              + Ajouter un Nouvel Enregistrement
+            </button>
+          </div>
+          <div class="flexItem">
+            <button
+              id="hideDebtors"
+              class="flexItem"
+              style="float: right"
+              onclick="hideDebtors()"
+            >
+              X
+            </button>
+          </div>
+        </div>
+        <table id="dataTable">
+          <thead>
+            <tr>
+              <th>Utilisateur</th>
+              <th>Nom Complet</th>
+              <th>Type</th>
+              <th>Dette Initiale</th>
+              <th>Montant Payé</th>
+              <th>Montant Restant</th>
+              <th>Devise</th>
+              <th>Date d'Enregistrement</th>
+              <th>Date d'Échéance</th>
+              <th>Progression du Paiement</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="debtsTableBody">
+            <!-- Les lignes seront ajoutées ici numériquement -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="addRecordModal" class="modal">
+      <div class="modal-content">
+        <span class="close" style="float: right">&times;</span>
+        <form id="addRecordForm">
+          <label for="fullName">Nom Complet:</label>
+          <input
+            type="text"
+            id="fullName"
+            name="fullName"
+            required
+            class="form-input"
+            autocomplete="off"
+          />
+
+          <label for="type">Type:</label>
+          <select id="type" name="type" required class="form-input">
+            <option value="Individual">Individuel</option>
+            <option value="Organisation">Organisation</option>
+          </select>
+
+          <label for="initialDebt">Dette Initiale:</label>
+          <input
+            type="number"
+            id="initialDebt"
+            name="initialDebt"
+            required
+            class="form-input"
+          />
+
+          <label for="currency">Devise:</label>
+          <select id="currency" name="currency" required class="form-input">
+            <option value="USD">USD 🇺🇸</option>
+            <option value="TZS">TZS 🇹🇿</option>
+            <option value="EUR">EUR 🇪🇺</option>
+            <option value="RUB">RUB 🇷🇺</option>
+            <option value="JPY">JPY 🇯🇵</option>
+            <option value="FRA">EUR 🇫🇷</option>
+            <option value="INR">INR 🇮🇳</option>
+            <option value="SAR">SAR 🇸🇦</option>
+            <option value="CNY">CNY 🇨🇳</option>
+          </select>
+
+          <label for="recordDate">Date d'Enregistrement:</label>
+          <input
+            type="date"
+            id="recordDate"
+            name="recordDate"
+            required
+            class="form-input"
+          />
+
+          <label for="paybackDate">Date d'Échéance:</label>
+          <input
+            type="date"
+            id="paybackDate"
+            name="paybackDate"
+            required
+            class="form-input"
+          />
+
+          <button type="submit" class="key">Ajouter un Enregistrement</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="superSettings" id="superSettings">
+      <div class="settings">
+        <div class="modal-content">
+          <span class="close" id="closeSettings" style="float: right"
+            >&times;</span
+          >
+          <h2>Paramètres</h2>
+          <form id="theSettingForm">
+            <label for="organizationName">Nom de l'Organisation:</label>
+            <input
+              type="text"
+              id="organizationName"
+              name="organizationName"
+              required
+              class="form-input"
+              autocomplete="off"
+              placeholder="Ex: cPage"
+            />
+
+            <label for="language">Langue:</label>
+            <select id="language" name="language" required class="form-input">
+              <option value="ENG">Anglais 🇺🇸</option>
+              <option value="SWH">Swahili 🇹🇿</option>
+              <option value="GER">Allemand 🇩🇪</option>
+              <option value="RUS">Russe 🇷🇺</option>
+              <option value="JPY">Japonais 🇯🇵</option>
+              <option value="FRA">Français 🇫🇷</option>
+              <option value="HIN">Hindi 🇮🇳</option>
+              <option value="ARA">Arabe 🇸🇦</option>
+              <option value="ZHO">Chinois 🇨🇳</option>
+            </select>
+
+            <button type="submit" class="key">Fermer & Appliquer</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!--- FYI: on God --->
+    <script src="./index.js"></script>
+  </body>
+</html>

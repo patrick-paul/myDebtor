@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./index.css" />
+    <link type="image/x-icon" href="./assets/notebook.png" rel="icon" />
+    <title>My Debtor</title>
+  </head>
+  <body id="body">
+    <div class="main">
+      <div class="freeTrial">
+        <h2>Оставшееся время бесплатного пробного периода:</h2>
+        <div class="clock">
+          <div class="flip">
+            <div class="digital front" data-number="0"></div>
+            <div class="digital back" data-number="1"></div>
+          </div>
+          <div class="flip">
+            <div class="digital front" data-number="5"></div>
+            <div class="digital back" data-number="4"></div>
+          </div>
+          <em class="divider">:</em>
+          <div class="flip">
+            <div class="digital front" data-number="0"></div>
+            <div class="digital back" data-number="1"></div>
+          </div>
+          <div class="flip">
+            <div class="digital front" data-number="0"></div>
+            <div class="digital back" data-number="1"></div>
+          </div>
+        </div>
+      </div>
+      <div class="header">
+        <h1>
+          My Debtor
+          <img
+            src="./assets/notebook.png"
+            alt="icon"
+            height="40px"
+            width="40px"
+          />
+        </h1>
+      </div>
+      <div class="buttons">
+        <div class="button1">
+          <button onclick="showDebtors()">
+            <img src="./assets/liability.png" alt="user icons" /> Должники
+          </button>
+        </div>
+        <div class="button2">
+          <button onclick="showCalculator()">
+            <img src="./assets/calculator.png" alt="user icons" /> Калькулятор
+          </button>
+        </div>
+        <div class="button3">
+          <button onclick="showSettings()">
+            <img src="./assets/cogwheel.png" alt="user icons" /> Настройки
+          </button>
+        </div>
+      </div>
+    </div>
+    <footer>
+      <span id="organisation" style="float: left; margin: 0 25px"></span>
+      <p>
+        &copy; 2024 Разработано:
+        <a
+          href="https://www.instagram.com/patric_forreal?igsh=a2V3b2FhOGRnaG15"
+          target="_blank"
+          >Patrick cPage</a
+        >
+        || CIVE IPT I 2024
+      </p>
+      <span id="lang" style="float: right; margin: 0 50px"></span>
+    </footer>
+
+    <div class="superCalculator" id="superCalculator">
+      <div class="calculator" id="calculator">
+        <div class="calculator-display" id="display">0</div>
+        <div class="calculator-keys">
+          <button class="key" onclick="hideCalculator()">Off</button>
+          <button class="key" style="visibility: hidden"></button>
+          <button class="key" onclick="deleteLast()">DEL</button>
+          <button class="key" onclick="clearDisplay()">AC</button>
+          <button class="key" onclick="appendNumber('7')">7</button>
+          <button class="key" onclick="appendNumber('8')">8</button>
+          <button class="key" onclick="appendNumber('9')">9</button>
+          <button class="key" onclick="chooseOperation('/')">/</button>
+          <button class="key" onclick="appendNumber('4')">4</button>
+          <button class="key" onclick="appendNumber('5')">5</button>
+          <button class="key" onclick="appendNumber('6')">6</button>
+          <button class="key" onclick="chooseOperation('*')">*</button>
+          <button class="key" onclick="appendNumber('1')">1</button>
+          <button class="key" onclick="appendNumber('2')">2</button>
+          <button class="key" onclick="appendNumber('3')">3</button>
+          <button class="key" onclick="chooseOperation('-')">-</button>
+          <button class="key" onclick="appendNumber('0')">0</button>
+          <button class="key" onclick="appendNumber('.')">.</button>
+          <button class="key" onclick="chooseOperation('%')">%</button>
+          <button class="key" onclick="chooseOperation('+')">+</button>
+          <button class="key equals" onclick="compute()">=</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="superContainer" id="superContainer">
+      <div class="container" id="container">
+        <div class="header" id="header">
+          <div class="flexItem">
+            <h1 class="flexItem" style="float: left">Все Долги</h1>
+          </div>
+          <div class="flexItem">
+            <button id="addNewRecord" class="flexItem">
+              + Добавить Запись
+            </button>
+          </div>
+          <div class="flexItem">
+            <button
+              id="hideDebtors"
+              class="flexItem"
+              style="float: right"
+              onclick="hideDebtors()"
+            >
+              X
+            </button>
+          </div>
+        </div>
+        <table id="dataTable">
+          <thead>
+            <tr>
+              <th>Пользователь</th>
+              <th>Полное Имя</th>
+              <th>Тип</th>
+              <th>Изначальный Долг</th>
+              <th>Оплачено</th>
+              <th>Долг</th>
+              <th>Валюта</th>
+              <th>Дата Записи</th>
+              <th>Дата Платежа</th>
+              <th>Ход Платежей</th>
+              <th>Действия</th>
+            </tr>
+          </thead>
+          <tbody id="debtsTableBody">
+            <!-- Строки будут добавлены здесь динамически -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="addRecordModal" class="modal">
+      <div class="modal-content">
+        <span class="close" style="float: right">&times;</span>
+        <form id="addRecordForm">
+          <label for="fullName">Полное Имя:</label>
+          <input
+            type="text"
+            id="fullName"
+            name="fullName"
+            required
+            class="form-input"
+            autocomplete="off"
+          />
+
+          <label for="type">Тип:</label>
+          <select id="type" name="type" required class="form-input">
+            <option value="Individual">Физическое лицо</option>
+            <option value="Organisation">Организация</option>
+          </select>
+
+          <label for="initialDebt">Изначальный Долг:</label>
+          <input
+            type="number"
+            id="initialDebt"
+            name="initialDebt"
+            required
+            class="form-input"
+          />
+
+          <label for="currency">Валюта:</label>
+          <select id="currency" name="currency" required class="form-input">
+            <option value="USD">USD 🇺🇸</option>
+            <option value="TZS">TZS 🇹🇿</option>
+            <option value="EUR">EUR 🇪🇺</option>
+            <option value="RUB">RUB 🇷🇺</option>
+            <option value="JPY">JPY 🇯🇵</option>
+            <option value="FRA">EUR 🇫🇷</option>
+            <option value="INR">INR 🇮🇳</option>
+            <option value="SAR">SAR 🇸🇦</option>
+            <option value="CNY">CNY 🇨🇳</option>
+          </select>
+
+          <label for="recordDate">Дата Записи:</label>
+          <input
+            type="date"
+            id="recordDate"
+            name="recordDate"
+            required
+            class="form-input"
+          />
+
+          <label for="paybackDate">Дата Платежа:</label>
+          <input
+            type="date"
+            id="paybackDate"
+            name="paybackDate"
+            required
+            class="form-input"
+          />
+
+          <button type="submit" class="key">Добавить Запись</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="superSettings" id="superSettings">
+      <div class="settings">
+        <div class="modal-content">
+          <span class="close" id="closeSettings" style="float: right"
+            >&times;</span
+          >
+          <h2>Настройки</h2>
+          <form id="theSettingForm">
+            <label for="organizationName">Название Организации:</label>
+            <input
+              type="text"
+              id="organizationName"
+              name="organizationName"
+              required
+              class="form-input"
+              autocomplete="off"
+              placeholder="Пример: cPage"
+            />
+
+            <label for="language">Язык:</label>
+            <select id="language" name="language" required class="form-input">
+              <option value="ENG">Английский 🇺🇸</option>
+              <option value="SWH">Суахили 🇹🇿</option>
+              <option value="GER">Немецкий 🇩🇪</option>
+              <option value="RUS">Русский 🇷🇺</option>
+              <option value="JPY">Японский 🇯🇵</option>
+              <option value="FRA">Французский 🇫🇷</option>
+              <option value="HIN">Хинди 🇮🇳</option>
+              <option value="ARA">Арабский 🇸🇦</option>
+              <option value="ZHO">Китайский 🇨🇳</option>
+            </select>
+
+            <button type="submit" class="key">Закрыть & Применить</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!--- FYI: on God --->
+    <script src="./index.js"></script>
+  </body>
+</html>

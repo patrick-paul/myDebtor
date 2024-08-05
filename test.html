@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flip Clock Countdown</title>
+    <style>
+      body {
+        background: #eee;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        font-family: "Courier New", Courier, monospace;
+      }
+
+      .clock {
+        display: flex;
+      }
+
+      .flip {
+        position: relative;
+        width: 60px;
+        height: 100px;
+        margin: 2px;
+        font-size: 66px;
+        line-height: 100px;
+        text-align: center;
+        border: 1px solid black;
+        border-radius: 10px;
+        box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
+      }
+
+      .digital::before,
+      .digital::after {
+        position: absolute;
+        content: attr(data-number);
+        left: 0;
+        right: 0;
+        color: #fff;
+        background: black;
+        overflow: hidden;
+        perspective: 160px;
+        -webkit-perspective: 160px;
+        perspective: 160px;
+      }
+
+      .digital::before {
+        top: 0;
+        bottom: 50%;
+        border-bottom: 1px solid #666;
+        border-radius: 10px 10px 0 0;
+      }
+
+      .digital::after {
+        top: 50%;
+        bottom: 0;
+        line-height: 0;
+        border-radius: 0 0 10px 10px;
+      }
+
+      .digital.front::after,
+      .digital.back::before {
+        z-index: 1;
+      }
+
+      .digital.back::after {
+        transform-origin: top center;
+        transform: rotateX(0.5turn);
+        z-index: 2;
+      }
+
+      .digital.front::before {
+        z-index: 3;
+      }
+
+      .divider {
+        font-size: 66px;
+        line-height: 102px;
+        font-style: normal;
+        color: white;
+      }
+
+      .flip.running .front::before {
+        transform-origin: center bottom;
+        animation: frontFlipDown 0.6s ease-in-out;
+        box-shadow: 0 -2px 6px rgba(255, 255, 255, 0.3);
+        backface-visibility: hidden;
+      }
+
+      .flip.running .back::after {
+        animation: backFlipDown 0.6s ease-in-out;
+      }
+
+      @keyframes frontFlipDown {
+        to {
+          transform: rotateX(0.5turn);
+        }
+      }
+
+      @keyframes backFlipDown {
+        to {
+          transform: rotateX(0);
+        }
+      }
+    </style>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="clock">
+      <div class="flip">
+        <div class="digital front" data-number="0"></div>
+        <div class="digital back" data-number="1"></div>
+      </div>
+      <div class="flip">
+        <div class="digital front" data-number="5"></div>
+        <div class="digital back" data-number="4"></div>
+      </div>
+      <em class="divider">:</em>
+      <div class="flip">
+        <div class="digital front" data-number="0"></div>
+        <div class="digital back" data-number="1"></div>
+      </div>
+      <div class="flip">
+        <div class="digital front" data-number="0"></div>
+        <div class="digital back" data-number="1"></div>
+      </div>
+    </div>
+    <script>
+      var Flipper = (function () {
+        function Flipper(node, currentTime, nextTime) {
+          this.isFlipping = false;
+          this.duration = 600;
+          this.flipNode = node;
+          this.frontNode = node.querySelector(".front");
+          this.backNode = node.querySelector(".back");
+          this.setFrontTime(currentTime);
+          this.setBackTime(nextTime);
+        }
+
+        Flipper.prototype.setFrontTime = function (time) {
+          this.frontNode.dataset.number = time;
+        };
+
+        Flipper.prototype.setBackTime = function (time) {
+          this.backNode.dataset.number = time;
+        };
+
+        Flipper.prototype.flipDown = function (currentTime, nextTime) {
+          var _this = this;
+
+          if (this.isFlipping) {
+            return false;
+          }
+          this.isFlipping = true;
+          this.setFrontTime(currentTime);
+          this.setBackTime(nextTime);
+          this.flipNode.classList.add("running");
+          setTimeout(function () {
+            _this.flipNode.classList.remove("running");
+            _this.isFlipping = false;
+            _this.setFrontTime(nextTime);
+          }, this.duration);
+        };
+        return Flipper;
+      })();
+
+      var getTimeFromSeconds = function (totalSeconds) {
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+        return {
+          minutes: (minutes < 10 ? "0" : "") + minutes,
+          seconds: (seconds < 10 ? "0" : "") + seconds,
+        };
+      };
+
+      var flips = document.querySelectorAll(".flip");
+      var timer = 60; // 5 minutes in seconds
+
+      var updateFlippers = function () {
+        var currentTime = getTimeFromSeconds(timer);
+        var nextTime = getTimeFromSeconds(timer - 1);
+
+        // Update minutes and seconds separately
+        if (currentTime.minutes !== nextTime.minutes) {
+          Flippers[0].flipDown(currentTime.minutes[0], nextTime.minutes[0]);
+          Flippers[1].flipDown(currentTime.minutes[1], nextTime.minutes[1]);
+        }
+        Flippers[2].flipDown(currentTime.seconds[0], nextTime.seconds[0]);
+        Flippers[3].flipDown(currentTime.seconds[1], nextTime.seconds[1]);
+
+        if (timer > 0) {
+          timer--;
+        } else {
+          clearInterval(countdown);
+        }
+      };
+
+      var Flippers = Array.from(flips).map(function (flip, i) {
+        return new Flipper(flip, "0", "0");
+      });
+
+      var countdown = setInterval(updateFlippers, 1000);
+    </script>
+  </body>
+</html>
